@@ -3,3 +3,4 @@ backend/target/
 backend/.m2/
 frontend/dist/
 frontend/node_modules/
+.idea/
