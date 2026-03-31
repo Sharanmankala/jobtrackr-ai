@@ -1,4 +1,11 @@
-import { AuthResponse, DashboardSummary, JobApplication, JobApplicationPayload, ApplicationStatus } from "../types";
+import {
+  ApplicationStatus,
+  AuthResponse,
+  DashboardSummary,
+  JobApplication,
+  JobApplicationPayload,
+  ParsedJobDescription
+} from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
 
@@ -38,6 +45,12 @@ export const api = {
     }),
 
   getDashboard: (token: string) => request<DashboardSummary>("/dashboard", {}, token),
+
+  parseJobDescription: (token: string, rawText: string) =>
+    request<ParsedJobDescription>("/ai/parse-jd", {
+      method: "POST",
+      body: JSON.stringify({ rawText })
+    }, token),
 
   getApplications: (token: string, status?: ApplicationStatus | "ALL") =>
     request<JobApplication[]>(

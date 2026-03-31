@@ -39,6 +39,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), null);
     }
 
+    @ExceptionHandler(AiIntegrationException.class)
+    public ResponseEntity<Map<String, Object>> handleAiIntegration(AiIntegrationException exception) {
+        return buildResponse(HttpStatus.BAD_GATEWAY, exception.getMessage(), null);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception exception) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong", null);

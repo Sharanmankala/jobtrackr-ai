@@ -3,7 +3,7 @@ import ApplicationForm from "../components/ApplicationForm";
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
-import { ApplicationStatus, JobApplication, JobApplicationPayload } from "../types";
+import { ApplicationStatus, JobApplication, JobApplicationPayload, ParsedJobDescription } from "../types";
 
 const filters: Array<ApplicationStatus | "ALL"> = ["ALL", "SAVED", "APPLIED", "INTERVIEW", "OFFER", "REJECTED"];
 
@@ -65,6 +65,14 @@ function ApplicationsPage() {
     }
   };
 
+  const handleParseJobDescription = async (rawText: string): Promise<ParsedJobDescription> => {
+    if (!token) {
+      throw new Error("You must be logged in to parse a job description");
+    }
+
+    return api.parseJobDescription(token, rawText);
+  };
+
   return (
     <Layout>
       <section className="page-header">
@@ -90,6 +98,7 @@ function ApplicationsPage() {
           selectedApplication={selectedApplication}
           onSubmit={handleSave}
           onCancelEdit={() => setSelectedApplication(null)}
+          onParseJobDescription={handleParseJobDescription}
         />
         <section className="panel">
           <div className="panel-header">

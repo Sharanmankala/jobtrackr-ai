@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ApplicationStatus, JobApplication, JobApplicationPayload } from "../types";
+import { ApplicationStatus, JobApplication, JobApplicationPayload, ParsedJobDescription } from "../types";
 
 const initialValues: JobApplicationPayload = {
   companyName: "",
@@ -20,11 +20,16 @@ type ApplicationFormProps = {
   selectedApplication: JobApplication | null;
   onSubmit: (payload: JobApplicationPayload, applicationId?: string) => Promise<void>;
   onCancelEdit: () => void;
+  onParseJobDescription: (rawText: string) => Promise<ParsedJobDescription>;
 };
 
-function ApplicationForm({ selectedApplication, onSubmit, onCancelEdit }: ApplicationFormProps) {
+function ApplicationForm({ selectedApplication, onSubmit, onCancelEdit, onParseJobDescription }: ApplicationFormProps) {
   const [formState, setFormState] = useState<JobApplicationPayload>(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rawJobDescription, setRawJobDescription] = useState("");
+  const [parsedResult, setParsedResult] = useState<ParsedJobDescription | null>(null);
+  const [parseError, setParseError] = useState("");
+  const [isParsing, setIsParsing] = useState(false);
 
   useEffect(() => {
     if (selectedApplication) {
@@ -43,6 +48,9 @@ function ApplicationForm({ selectedApplication, onSubmit, onCancelEdit }: Applic
     } else {
       setFormState(initialValues);
     }
+    setRawJobDescription("");
+    setParsedResult(null);
+    setParseError("");
   }, [selectedApplication]);
 
   const handleChange = (field: keyof JobApplicationPayload, value: string) => {
@@ -56,9 +64,39 @@ function ApplicationForm({ selectedApplication, onSubmit, onCancelEdit }: Applic
       await onSubmit(formState, selectedApplication?.id);
       if (!selectedApplication) {
         setFormState(initialValues);
+        setRawJobDescription("");
+        setParsedResult(null);
+        setParseError("");
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleParse = async () => {
+    if (!rawJobDescription.trim()) {
+      setParseError("Paste a job description before parsing.");
+      return;
+    }
+
+    setIsParsing(true);
+    setParseError("");
+
+    try {
+      const parsed = await onParseJobDescription(rawJobDescription);
+      setParsedResult(parsed);
+      setFormState((current) => ({
+        ...current,
+        companyName: parsed.companyName || current.companyName,
+        jobTitle: parsed.jobTitle || current.jobTitle,
+        location: parsed.location || current.location,
+        salaryRange: parsed.salaryRange || current.salaryRange,
+        jdSummary: parsed.summary || current.jdSummary
+      }));
+    } catch (error) {
+      setParseError(error instanceof Error ? error.message : "Unable to parse job description");
+    } finally {
+      setIsParsing(false);
     }
   };
 
@@ -112,7 +150,39 @@ function ApplicationForm({ selectedApplication, onSubmit, onCancelEdit }: Applic
       </label>
       <label className="full-span">
         AI paste JD section
-        <textarea rows={4} value={formState.jdSummary} onChange={(event) => handleChange("jdSummary", event.target.value)} placeholder="Paste a short JD summary for now. AI parsing endpoint comes next." />
+        <textarea
+          rows={6}
+          value={rawJobDescription}
+          onChange={(event) => setRawJobDescription(event.target.value)}
+          placeholder="Paste the full job description here, then click Parse JD."
+        />
+      </label>
+      <div className="full-span parse-actions">
+        <button type="button" onClick={handleParse} disabled={isParsing}>
+          {isParsing ? "Parsing..." : "Parse JD"}
+        </button>
+        {parseError && <p className="error-text">{parseError}</p>}
+      </div>
+      {parsedResult && (
+        <section className="full-span parsed-result">
+          <h3>Parsed JD summary</h3>
+          <p>{parsedResult.summary}</p>
+          <h4>Key requirements</h4>
+          <ul className="requirements-list">
+            {parsedResult.keyRequirements.map((requirement, index) => (
+              <li key={`${requirement}-${index}`}>{requirement}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <label className="full-span">
+        JD summary
+        <textarea
+          rows={4}
+          value={formState.jdSummary}
+          onChange={(event) => handleChange("jdSummary", event.target.value)}
+          placeholder="Parsed summary appears here and can still be edited."
+        />
       </label>
       <label className="full-span">
         Follow-up email draft

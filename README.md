@@ -30,9 +30,12 @@ JobTrackr AI is a beginner-friendly full-stack starter for tracking job applicat
 - `GET /api/applications/{id}/score`
 - `GET /api/dashboard`
 
-## Planned next features
+### AI
 
 - `POST /api/ai/parse-jd`
+
+## Planned next features
+
 - `POST /api/ai/generate-followup`
 - richer dashboard visualizations
 - Railway deployment polish
@@ -46,15 +49,24 @@ JobTrackr AI is a beginner-friendly full-stack starter for tracking job applicat
 └── docker-compose.yml
 ```
 
-## Local setup without Docker
+## Requirements
+
+Before running locally, make sure you have:
+
+- Java 17
+- Maven
+- Node.js and npm
+- PostgreSQL
+
+## Single local startup path
 
 ### 1. Start PostgreSQL
 
-Create a database named `jobtrackr_ai` in your local PostgreSQL instance.
+Start PostgreSQL locally and create a database named `jobtrackr_ai`.
 
 ### 2. Configure backend environment
 
-Copy `backend/.env.example` into your preferred local env source and set:
+Use [backend/.env.example](/Users/sharan/Documents/New project/backend/.env.example) as your template and provide:
 
 - `DB_URL`
 - `DB_USERNAME`
@@ -62,21 +74,31 @@ Copy `backend/.env.example` into your preferred local env source and set:
 - `JWT_SECRET`
 - `JWT_EXPIRATION_MS`
 - `PORT`
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL`
+- `OPENAI_BASE_URL`
 
-### 3. Run the backend
+Important:
+- Keep `OPENAI_API_KEY` in your shell or local environment settings.
+- Do not hardcode it.
+- Do not commit it.
+
+### 3. Start the backend
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-The backend runs on `http://localhost:8080`.
+Backend URL: `http://localhost:8080`
 
 ### 4. Configure frontend environment
 
-Copy `frontend/.env.example` to `.env` and update `VITE_API_BASE_URL` if needed.
+Copy [frontend/.env.example](/Users/sharan/Documents/New project/frontend/.env.example) to `.env` and set:
 
-### 5. Run the frontend
+- `VITE_API_BASE_URL=http://localhost:8080/api`
+
+### 5. Start the frontend
 
 ```bash
 cd frontend
@@ -84,7 +106,27 @@ npm install
 npm run dev
 ```
 
-The frontend runs on `http://localhost:5173`.
+Frontend URL: `http://localhost:5173`
+
+## First verification path
+
+Test in this order:
+
+1. Register and login
+2. Create one application
+3. Edit and delete that application
+4. Call `POST /api/ai/parse-jd` with the JWT token
+
+Example first AI test:
+
+```bash
+curl -X POST http://localhost:8080/api/ai/parse-jd \
+  -H "Authorization: Bearer <jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rawText": "Senior Backend Engineer at Acme in Austin, TX with Java, Spring Boot, PostgreSQL, and cloud experience..."
+  }'
+```
 
 ## Local setup with Docker
 
@@ -103,6 +145,11 @@ This starts:
 - Backend reads database and JWT config from environment variables.
 - Frontend reads API base URL from `VITE_API_BASE_URL`.
 - The current backend uses `spring.jpa.hibernate.ddl-auto=update` for MVP speed. For production, move to migrations with Flyway or Liquibase.
+
+## Repo guidance
+
+- Keep the repo root clean and use it as the main starting point.
+- Project-specific agent instructions live in [AGENTS.md](/Users/sharan/Documents/New project/AGENTS.md).
 
 ## Default health score logic
 

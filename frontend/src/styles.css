@@ -184,6 +184,32 @@ label {
   grid-column: 1 / -1;
 }
 
+.parse-actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.parsed-result {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: rgba(240, 253, 250, 0.85);
+  border: 1px solid #99f6e4;
+}
+
+.parsed-result h3,
+.parsed-result h4 {
+  margin: 0;
+}
+
+.requirements-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.requirements-list li + li {
+  margin-top: 0.4rem;
+}
+
 .application-list {
   display: grid;
   gap: 1rem;

@@ -23,3 +23,7 @@ app:
   jwt:
     secret: ${JWT_SECRET:ZGV2ZWxvcG1lbnQtand0LXNlY3JldC1mb3Itam9idHJhY2tyLWFpLXRva2VuLTEyMzQ1Njc4OTA=}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-5.2}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}

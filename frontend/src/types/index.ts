@@ -29,6 +29,15 @@ export type DashboardSummary = {
   totalApplications: number;
 };
 
+export type ParsedJobDescription = {
+  companyName: string;
+  jobTitle: string;
+  location: string;
+  salaryRange: string;
+  summary: string;
+  keyRequirements: string[];
+};
+
 export type JobApplicationPayload = {
   companyName: string;
   jobTitle: string;
