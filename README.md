@@ -1,36 +1,4 @@
-# Sai Sharan Portfolio + JobTrackr AI
-
-This repository now serves two purposes:
-
-- a public-facing portfolio website for Sai Sharan at the frontend root route
-- the original JobTrackr AI full-stack application built with Spring Boot, PostgreSQL, React, and TypeScript
-
-## Portfolio first
-
-The portfolio is the default web entry point.
-
-- `/` renders the public portfolio
-- `/app` routes into the JobTrackr application
-- `/login`, `/register`, `/dashboard`, and `/applications` continue to support the app flow
-
-Portfolio highlights:
-
-- monochrome visual portfolio with interactive project cards
-- public experience, project, and tech-stack sections
-- downloadable resume from `frontend/public/resume.pdf`
-- GitHub Pages deployment workflow for the frontend
-
-## GitHub Pages deployment
-
-The repository includes `.github/workflows/deploy-portfolio.yml`.
-
-- pushes to `main` that touch `frontend/**` or the workflow trigger a GitHub Pages deployment
-- the frontend build uses `VITE_PUBLIC_BASE` so it can be served from the repository subpath
-- `frontend/dist/404.html` is generated as an SPA fallback for deep links
-
-To publish on GitHub Pages, make sure Pages is enabled in the repository settings and set the source to `GitHub Actions`.
-
-## JobTrackr AI
+# JobTrackr AI
 
 JobTrackr AI is a beginner-friendly full-stack starter for tracking job applications with a Spring Boot 3 backend, PostgreSQL database, and React + TypeScript frontend.
 
