@@ -1,4 +1,36 @@
-# JobTrackr AI
+# Sai Sharan Portfolio + JobTrackr AI
+
+This repository now serves two purposes:
+
+- a public-facing portfolio website for Sai Sharan at the frontend root route
+- the original JobTrackr AI full-stack application built with Spring Boot, PostgreSQL, React, and TypeScript
+
+## Portfolio first
+
+The portfolio is the default web entry point.
+
+- `/` renders the public portfolio
+- `/app` routes into the JobTrackr application
+- `/login`, `/register`, `/dashboard`, and `/applications` continue to support the app flow
+
+Portfolio highlights:
+
+- monochrome visual portfolio with interactive project cards
+- public experience, project, and tech-stack sections
+- downloadable resume from `frontend/public/resume.pdf`
+- GitHub Pages deployment workflow for the frontend
+
+## GitHub Pages deployment
+
+The repository includes `.github/workflows/deploy-portfolio.yml`.
+
+- pushes to `main` that touch `frontend/**` or the workflow trigger a GitHub Pages deployment
+- the frontend build uses `VITE_PUBLIC_BASE` so it can be served from the repository subpath
+- `frontend/dist/404.html` is generated as an SPA fallback for deep links
+
+To publish on GitHub Pages, make sure Pages is enabled in the repository settings and set the source to `GitHub Actions`.
+
+## JobTrackr AI
 
 JobTrackr AI is a beginner-friendly full-stack starter for tracking job applications with a Spring Boot 3 backend, PostgreSQL database, and React + TypeScript frontend.
 
@@ -33,6 +65,7 @@ JobTrackr AI is a beginner-friendly full-stack starter for tracking job applicat
 ### AI
 
 - `POST /api/ai/parse-jd`
+- `POST /api/ai/generate-followup`
 
 ## Planned next features
 
@@ -116,6 +149,7 @@ Test in this order:
 2. Create one application
 3. Edit and delete that application
 4. Call `POST /api/ai/parse-jd` with the JWT token
+5. Call `POST /api/ai/generate-followup` with the JWT token
 
 Example first AI test:
 
@@ -125,6 +159,20 @@ curl -X POST http://localhost:8080/api/ai/parse-jd \
   -H "Content-Type: application/json" \
   -d '{
     "rawText": "Senior Backend Engineer at Acme in Austin, TX with Java, Spring Boot, PostgreSQL, and cloud experience..."
+  }'
+```
+
+Example follow-up generation test:
+
+```bash
+curl -X POST http://localhost:8080/api/ai/generate-followup \
+  -H "Authorization: Bearer <jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "companyName": "Acme",
+    "jobTitle": "Backend Engineer",
+    "status": "APPLIED",
+    "notes": "Applied last week and had a positive initial conversation."
   }'
 ```
 

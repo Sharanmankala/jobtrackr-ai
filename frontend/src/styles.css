@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: "Avenir Next", "Segoe UI", sans-serif;
   color: #1e293b;
@@ -11,13 +13,19 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
 }
 
 a {
   color: inherit;
+  text-decoration: none;
 }
 
 button,
@@ -27,7 +35,18 @@ textarea {
   font: inherit;
 }
 
-button {
+img {
+  display: block;
+  max-width: 100%;
+}
+
+label {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.auth-page button,
+.app-shell button {
   border: none;
   border-radius: 999px;
   padding: 0.8rem 1.2rem;
@@ -36,20 +55,18 @@ button {
   cursor: pointer;
 }
 
-input,
-select,
-textarea {
+.auth-page input,
+.auth-page select,
+.auth-page textarea,
+.app-shell input,
+.app-shell select,
+.app-shell textarea {
   width: 100%;
   margin-top: 0.4rem;
   border-radius: 16px;
   border: 1px solid #d5dde8;
   padding: 0.85rem 1rem;
   background: rgba(255, 255, 255, 0.9);
-}
-
-label {
-  display: block;
-  font-size: 0.95rem;
 }
 
 .auth-page {
@@ -126,7 +143,6 @@ label {
 }
 
 .nav-links a {
-  text-decoration: none;
   padding: 0.9rem 1rem;
   border-radius: 18px;
 }
@@ -221,8 +237,34 @@ label {
   border-radius: 22px;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.application-card-header {
+  display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.followup-result {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: rgba(239, 246, 255, 0.9);
+  border: 1px solid #bfdbfe;
+  display: grid;
+  gap: 1rem;
+}
+
+.followup-block {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.followup-body {
+  white-space: pre-wrap;
 }
 
 .status-badge {
@@ -259,6 +301,54 @@ label {
   color: white;
 }
 
+.portfolio-shell {
+  --cursor-x: 50%;
+  --cursor-y: 15%;
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 22%),
+    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.05), transparent 24%),
+    linear-gradient(180deg, #080808 0%, #040404 45%, #000000 100%);
+  color: #f2f2f2;
+}
+
+.portfolio-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(255, 255, 255, 0.08), transparent 24%);
+  opacity: 0.85;
+  z-index: 0;
+}
+
+.portfolio-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 110px 110px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 92%);
+  z-index: 0;
+}
+
+.portfolio-content {
+  position: relative;
+  z-index: 1;
+}
+
+.section-anchor-offset {
+  scroll-margin-top: 6.5rem;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
 @media (max-width: 960px) {
   .auth-page,
   .app-shell,
@@ -281,5 +371,15 @@ label {
   .card-actions,
   .filter-row {
     flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .portfolio-shell::before {
+    display: none;
   }
 }
